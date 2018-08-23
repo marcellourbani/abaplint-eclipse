@@ -25,6 +25,7 @@ package org.abaplint.eclipse.builder;
  */
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -200,6 +201,31 @@ public class AbaplintBuilder extends IncrementalProjectBuilder {
 
 			runFile(file);
 		}
+	}
+    protected String getBundleLocation() {
+		try {
+	    	Runtime rt = Runtime.getRuntime();
+	    	String[] commands = {"npm","root","-g"};
+	    	Process proc;
+			proc = rt.exec(commands);
+	    	BufferedReader stdInput = new BufferedReader(new 
+	       	     InputStreamReader(proc.getInputStream()));
+	        StringBuilder sb = new StringBuilder(); 
+	        sb.append(stdInput.readLine());
+	        sb.append(File.separator);
+	        sb.append("abaplint");
+	        sb.append(File.separator);
+	        sb.append("build");
+	        sb.append(File.separator);
+	        sb.append("bundle.js");
+	        return sb.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+
+//		return "/usr/lib/node_modules/abaplint/build/bundle.js";
+//    	return "C:\\Users\\marcello\\AppData\\Roaming\\npm\\node_modules\\abaplint\\build\\bundle.js";
 	}
 
 	private void deleteMarkers(IFile file) {
